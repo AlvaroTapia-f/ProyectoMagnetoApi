@@ -30,7 +30,10 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         if (existsDna.isPresent()){
             return existsDna.get().isMutant();
         }
-        
+
+        //Obtener todas las secuencias posibles
+        ArrayList<String> palabras = getPalabras(dna);
+
         boolean isMutant = isMutant(dna);
         Dna dnaEntity = Dna.builder()
                 .dna(dna)
@@ -85,6 +88,50 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return contador >= 1;
     }
 
+    private ArrayList<String> getPalabras(String[] dna){
+        ArrayList<String> palabras = new ArrayList<>();
+
+        //Agregar filas
+        for (String p : dna){
+            palabras.add(p);
+        }
+
+        //Agregar columnas
+        for (int columna = 0 ; columna < dna.length ; columna++){
+            StringBuffer strColumnas = new StringBuffer(dna.length);
+            for (int fila = 0 ; fila < dna.length ; fila++){
+                strColumnas.append(dna[fila].charAt(columna));
+            }
+            palabras.add(strColumnas.toString());
+        }
+
+        //Agregar diagonales
+        for (int i = 0 ; i < dna.length  ; i++){
+            StringBuffer strDiagonal1 = new StringBuffer(dna.length);
+            StringBuffer strDiagonal2 = new StringBuffer(dna.length);
+            for (int j = 0; j < dna.length - i; j++){
+                strDiagonal1.append(dna[j].charAt(i+j));
+                if (i != 0){
+                    strDiagonal2.append(dna[j+i].charAt(j));
+                }
+            }
+            if (strDiagonal1.length() >= 4){
+                palabras.add(strDiagonal1.toString());
+            }
+
+            if (strDiagonal2.length() >= 4){
+                palabras.add(strDiagonal2.toString());
+            }
+        }
+
+        for (String word : palabras){
+            System.out.println(word);
+        }
+
+        return palabras;
+
+    }
+
     //Verificación horizontal
     private int verificarHorizontal(String[] dna, int contador){
         for (String palabra : dna) {
@@ -107,7 +154,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
 
     private int verificarSecuencias(String palabra) {
         int contadorSecuencia = 0;
-        for (int i = 0; i < palabra.length() - 3; i += 2) {
+        for (int i = 0; i < palabra.length() - 2; i += 2) {
             if (palabra.charAt(i) == palabra.charAt(i + 2)) {
                 char actual = palabra.charAt(i);
                 if((i != 0 &&  actual == palabra.charAt(i-1) && actual == palabra.charAt(i+1)) ||
