@@ -5,8 +5,6 @@ import com.example.magnetoAPI.repositorios.BaseRepository;
 import com.example.magnetoAPI.repositorios.DnaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -25,14 +23,14 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             throw new IllegalArgumentException("La matriz de ADN no es válida. Debe ser una matriz NxN.");
         }
 
-        //Verificamos si existe en ADN ingresado
+        //Verificamos si existe el ADN ingresado
         Optional<Dna> existsDna = dnaRepository.findByDna(dna);
         if (existsDna.isPresent()){
             return existsDna.get().isMutant();
         }
 
         //Obtener todas las secuencias posibles
-        ArrayList<String> palabras = getPalabras(dna);
+//        ArrayList<String> palabras = getPalabras(dna);
 
         boolean isMutant = isMutant(dna);
         Dna dnaEntity = Dna.builder()
@@ -40,8 +38,12 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
                 .mutant(isMutant)
                 .build();
         dnaRepository.save(dnaEntity);
-
-        return isMutant(dna);
+       /* if (isMutant){
+        return isMutant;
+        } else {
+            throw new IllegalArgumentException("");
+        } */
+        return isMutant;
     }
 
     @Override
@@ -50,10 +52,10 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         int contador = 0;
 
         // Verificacion horizontal
-        contador = verificarHorizontal(dna, contador);
+        contador += verificarHorizontal(dna, contador);
 
         // Verificación vertical
-        contador = verificarVertical(dna, longDna, contador);
+        contador += verificarVertical(dna, longDna, contador);
 
         // Diagonal check (top-left to bottom-right)
         for (int i = 0; i < longDna; i++) {
@@ -85,9 +87,13 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             contador += verificarSecuencias(diagonal.toString());
         }
 
-        return contador >= 1;
+        return contador > 0;
     }
 
+    //Probar rendimiento con el metodo de getPalabras vs metodo actual
+    //Actualmente funcionando, eficiencia mejorada. Dto implementado
+
+    /*
     private ArrayList<String> getPalabras(String[] dna){
         ArrayList<String> palabras = new ArrayList<>();
 
@@ -131,6 +137,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return palabras;
 
     }
+*/
 
     //Verificación horizontal
     private int verificarHorizontal(String[] dna, int contador){
