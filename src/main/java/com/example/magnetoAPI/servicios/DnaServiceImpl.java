@@ -1,10 +1,14 @@
 package com.example.magnetoAPI.servicios;
 
+import com.example.magnetoAPI.dto.DnaRequestDto;
+import com.example.magnetoAPI.dto.DnaStatsDto;
 import com.example.magnetoAPI.entidades.Dna;
 import com.example.magnetoAPI.repositorios.BaseRepository;
 import com.example.magnetoAPI.repositorios.DnaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,12 +42,12 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
                 .mutant(isMutant)
                 .build();
         dnaRepository.save(dnaEntity);
-       /* if (isMutant){
+
+        if (isMutant){
         return isMutant;
         } else {
             throw new IllegalArgumentException("");
-        } */
-        return isMutant;
+        }
     }
 
     @Override
@@ -56,20 +60,24 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
 
         // Verificación vertical
         contador += verificarVertical(dna, longDna, contador);
-
         // Diagonal check (top-left to bottom-right)
         for (int i = 0; i < longDna; i++) {
             StringBuilder diagonal = new StringBuilder();
             for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j + i].charAt(j));
+                diagonal.append(dna[j].charAt(i+j));
             }
+            if (diagonal.length() >= 4){
             contador += verificarSecuencias(diagonal.toString());
+            }
 
             diagonal = new StringBuilder();
             for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j].charAt(j + i));
+                diagonal.append(dna[j+i].charAt(j));
             }
+            if (diagonal.length() >= 4){
             contador += verificarSecuencias(diagonal.toString());
+            }
+
         }
 
         // Diagonal check (top-right to bottom-left)
@@ -78,15 +86,18 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             for (int j = 0; j < longDna - i; j++) {
                 diagonal.append(dna[j + i].charAt(longDna - j - 1));
             }
+            if (diagonal.length() >= 4){
             contador += verificarSecuencias(diagonal.toString());
+            }
 
             diagonal = new StringBuilder();
             for (int j = 0; j < longDna - i; j++) {
                 diagonal.append(dna[j].charAt(longDna - j - 1 - i));
             }
+            if (diagonal.length() >= 4){
             contador += verificarSecuencias(diagonal.toString());
+            }
         }
-
         return contador > 0;
     }
 

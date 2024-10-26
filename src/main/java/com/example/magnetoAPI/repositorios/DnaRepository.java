@@ -7,4 +7,5 @@ import java.util.Optional;
 @Repository
 public interface DnaRepository extends BaseRepository<Dna, Long> {
     Optional<Dna> findByDna(String[] dna);
+    int countByMutant(Boolean is);
 }

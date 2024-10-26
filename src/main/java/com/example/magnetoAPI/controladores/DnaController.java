@@ -17,8 +17,9 @@ public class DnaController extends BaseControllerImpl<Dna, DnaServiceImpl>{
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicio.analizarDna(dnaRequest.getDna()));
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"Error\":\" El ADN ingresado no pertenece a un mutante \"}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\":\" El ADN ingresado no pertenece a un mutante \"}");
         }
+
     }
 
 }
