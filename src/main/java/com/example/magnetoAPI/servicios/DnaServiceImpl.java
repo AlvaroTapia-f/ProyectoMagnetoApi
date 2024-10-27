@@ -57,77 +57,25 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             return true;
         }
 
-        //Obtener todas las columnas y diagonales posibles
-        ArrayList<String> palabras = getPalabras(dna);
-
-        //Verificacion vertical y diagonal
-        contador += verificarGenerico(palabras, contador);
-
-        /*
-        // Verificación vertical
-        contador += verificarVertical(dna, longDna, contador);
-
-
-        // Diagonal check (top-left to bottom-right)
-        for (int i = 0; i < longDna; i++) {
-            StringBuilder diagonal = new StringBuilder();
-            for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j].charAt(i+j));
-            }
-            if (diagonal.length() >= 4){
-            contador += verificarSecuencias(diagonal.toString());
-            }
-
-            diagonal = new StringBuilder();
-            for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j+i].charAt(j));
-            }
-            if (diagonal.length() >= 4){
-            contador += verificarSecuencias(diagonal.toString());
-            }
-
+        // Verificacion vertical
+        contador += verificarVertical(dna, contador);
+        if (contador > 0){
+            return true;
         }
 
-        // Diagonal check (top-right to bottom-left)
-        for (int i = 0; i < longDna; i++) {
-            StringBuilder diagonal = new StringBuilder();
-            for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j + i].charAt(longDna - j - 1));
-            }
-            if (diagonal.length() >= 4){
-            contador += verificarSecuencias(diagonal.toString());
-            }
+        //Obtener todas las diagonales posibles
+        ArrayList<String> diagonales = getDiagonales(dna);
 
-            diagonal = new StringBuilder();
-            for (int j = 0; j < longDna - i; j++) {
-                diagonal.append(dna[j].charAt(longDna - j - 1 - i));
-            }
-            if (diagonal.length() >= 4){
-            contador += verificarSecuencias(diagonal.toString());
-            }
-        }
+        //Verificacion diagonal
+        contador += verificarDiagonales(diagonales, contador);
 
-         */
 
         return contador > 0;
     }
 
-    //Probar rendimiento con el metodo de getPalabras vs metodo actual
-    //Actualmente funcionando, eficiencia mejorada. Dto implementado
-
-
-    private ArrayList<String> getPalabras(String[] dna){
+    private ArrayList<String> getDiagonales(String[] dna){
         int longDna = dna.length;
         ArrayList<String> palabras = new ArrayList<>();
-
-        //Agregar columnas
-        for (int columna = 0 ; columna < longDna ; columna++){
-            StringBuffer strColumnas = new StringBuffer(longDna);
-            for (int fila = 0 ; fila < longDna ; fila++){
-                strColumnas.append(dna[fila].charAt(columna));
-            }
-            palabras.add(strColumnas.toString());
-        }
 
         //Agregar diagonales arriba-izquierda abajo-derecha
         for (int i = 0 ; i < longDna  ; i++){
@@ -176,14 +124,36 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
     private int verificarHorizontal(String[] dna, int contador){
         for (String palabra : dna) {
             contador += verificarSecuencias(palabra);
+            if (contador > 0){
+                return contador;
+            }
         }
         return contador;
     }
-    private int verificarGenerico(ArrayList<String> dna, int contador){
+
+    // Verificación vertical
+    private int verificarVertical(String[] dna, int contador){
+
+        int longDna = dna.length;
+
+        for (int columna = 0 ; columna < longDna ; columna++){
+            StringBuffer strColumnas = new StringBuffer(longDna);
+            for (int fila = 0 ; fila < longDna ; fila++){
+                strColumnas.append(dna[fila].charAt(columna));
+            }
+            contador += verificarSecuencias(strColumnas.toString());
+            if (contador > 0){
+                return contador;
+            }
+        }
+        return contador;
+    }
+
+    private int verificarDiagonales(ArrayList<String> dna, int contador){
         for (String palabra : dna) {
             contador += verificarSecuencias(palabra);
             if (contador > 0){
-                break;
+                return contador;
             }
         }
         return contador;
@@ -223,17 +193,3 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
     }
 }
 
-
-/*
-    // Verificación vertical
-    private int verificarVertical(String[] dna, int longDna, int contador){
-        for (int col = 0; col < longDna; col++) {
-            StringBuilder columna = new StringBuilder();
-            for (String palabra : dna) {
-                columna.append(palabra.charAt(col));
-            }
-            contador += verificarSecuencias(columna.toString());
-        }
-        return contador;
-    }
- */
