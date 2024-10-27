@@ -1,14 +1,11 @@
 package com.example.magnetoAPI.servicios;
 
-import com.example.magnetoAPI.dto.DnaRequestDto;
-import com.example.magnetoAPI.dto.DnaStatsDto;
 import com.example.magnetoAPI.entidades.Dna;
 import com.example.magnetoAPI.repositorios.BaseRepository;
 import com.example.magnetoAPI.repositorios.DnaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -33,10 +30,8 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             return existsDna.get().isMutant();
         }
 
-        //Obtener todas las secuencias posibles
-//        ArrayList<String> palabras = getPalabras(dna);
-
         boolean isMutant = isMutant(dna);
+
         Dna dnaEntity = Dna.builder()
                 .dna(dna)
                 .mutant(isMutant)
@@ -48,18 +43,31 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         } else {
             throw new IllegalArgumentException("");
         }
+
     }
 
     @Override
     public boolean isMutant(String[] dna) {
-        int longDna = dna.length;
         int contador = 0;
+
 
         // Verificacion horizontal
         contador += verificarHorizontal(dna, contador);
+        if (contador > 0){
+            return true;
+        }
 
+        //Obtener todas las columnas y diagonales posibles
+        ArrayList<String> palabras = getPalabras(dna);
+
+        //Verificacion vertical y diagonal
+        contador += verificarGenerico(palabras, contador);
+
+        /*
         // Verificación vertical
         contador += verificarVertical(dna, longDna, contador);
+
+
         // Diagonal check (top-left to bottom-right)
         for (int i = 0; i < longDna; i++) {
             StringBuilder diagonal = new StringBuilder();
@@ -98,35 +106,34 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             contador += verificarSecuencias(diagonal.toString());
             }
         }
+
+         */
+
         return contador > 0;
     }
 
     //Probar rendimiento con el metodo de getPalabras vs metodo actual
     //Actualmente funcionando, eficiencia mejorada. Dto implementado
 
-    /*
+
     private ArrayList<String> getPalabras(String[] dna){
+        int longDna = dna.length;
         ArrayList<String> palabras = new ArrayList<>();
 
-        //Agregar filas
-        for (String p : dna){
-            palabras.add(p);
-        }
-
         //Agregar columnas
-        for (int columna = 0 ; columna < dna.length ; columna++){
-            StringBuffer strColumnas = new StringBuffer(dna.length);
-            for (int fila = 0 ; fila < dna.length ; fila++){
+        for (int columna = 0 ; columna < longDna ; columna++){
+            StringBuffer strColumnas = new StringBuffer(longDna);
+            for (int fila = 0 ; fila < longDna ; fila++){
                 strColumnas.append(dna[fila].charAt(columna));
             }
             palabras.add(strColumnas.toString());
         }
 
-        //Agregar diagonales
-        for (int i = 0 ; i < dna.length  ; i++){
-            StringBuffer strDiagonal1 = new StringBuffer(dna.length);
-            StringBuffer strDiagonal2 = new StringBuffer(dna.length);
-            for (int j = 0; j < dna.length - i; j++){
+        //Agregar diagonales arriba-izquierda abajo-derecha
+        for (int i = 0 ; i < longDna  ; i++){
+            StringBuffer strDiagonal1 = new StringBuffer(longDna);
+            StringBuffer strDiagonal2 = new StringBuffer(longDna);
+            for (int j = 0; j < longDna - i; j++){
                 strDiagonal1.append(dna[j].charAt(i+j));
                 if (i != 0){
                     strDiagonal2.append(dna[j+i].charAt(j));
@@ -141,14 +148,29 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
             }
         }
 
-        for (String word : palabras){
-            System.out.println(word);
+        //Agregar diagonales arriba-derecha abajo-izquierda
+        for (int i = 0; i < longDna; i++) {
+            StringBuffer strDiagonal1 = new StringBuffer(longDna);
+            StringBuffer strDiagonal2 = new StringBuffer(longDna);
+            for (int j = 0; j < longDna - i; j++) {
+                strDiagonal1.append(dna[j].charAt(longDna - j - 1 - i));
+                if (i != 0){
+                    strDiagonal2.append(dna[j + i].charAt(longDna - j - 1));
+
+                }
+            }
+            if (strDiagonal1.length() >= 4){
+                palabras.add(strDiagonal1.toString());
+            }
+            if (strDiagonal2.length() >= 4){
+                palabras.add(strDiagonal2.toString());
+            }
         }
 
         return palabras;
 
     }
-*/
+
 
     //Verificación horizontal
     private int verificarHorizontal(String[] dna, int contador){
@@ -157,22 +179,19 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         }
         return contador;
     }
-
-    // Verificación vertical
-    private int verificarVertical(String[] dna, int longDna, int contador){
-        for (int col = 0; col < longDna; col++) {
-            StringBuilder columna = new StringBuilder();
-            for (String palabra : dna) {
-                columna.append(palabra.charAt(col));
+    private int verificarGenerico(ArrayList<String> dna, int contador){
+        for (String palabra : dna) {
+            contador += verificarSecuencias(palabra);
+            if (contador > 0){
+                break;
             }
-            contador += verificarSecuencias(columna.toString());
         }
         return contador;
     }
 
     private int verificarSecuencias(String palabra) {
         int contadorSecuencia = 0;
-        for (int i = 0; i < palabra.length() - 2; i += 2) {
+        for (int i = 0; i < palabra.length() - 3; i += 2) {
             if (palabra.charAt(i) == palabra.charAt(i + 2)) {
                 char actual = palabra.charAt(i);
                 if((i != 0 &&  actual == palabra.charAt(i-1) && actual == palabra.charAt(i+1)) ||
@@ -203,3 +222,18 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return true;
     }
 }
+
+
+/*
+    // Verificación vertical
+    private int verificarVertical(String[] dna, int longDna, int contador){
+        for (int col = 0; col < longDna; col++) {
+            StringBuilder columna = new StringBuilder();
+            for (String palabra : dna) {
+                columna.append(palabra.charAt(col));
+            }
+            contador += verificarSecuencias(columna.toString());
+        }
+        return contador;
+    }
+ */
