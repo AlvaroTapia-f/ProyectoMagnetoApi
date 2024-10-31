@@ -5,6 +5,6 @@ import com.example.magnetoAPI.entidades.Dna;
 
 public interface StatsService extends BaseService<Dna, Long>{
 
-    DnaStatsDto getStats() throws Exception;
+    DnaStatsDto getStats();
 
 }

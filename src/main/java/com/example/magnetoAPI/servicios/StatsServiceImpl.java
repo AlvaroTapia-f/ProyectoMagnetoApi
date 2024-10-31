@@ -12,16 +12,24 @@ import java.util.List;
 @Service
 public class StatsServiceImpl extends BaseServiceImpl<Dna, Long> implements StatsService {
 
-    @Autowired
+//  @Autowired
     private DnaRepository dnaRepository;
 
-    public StatsServiceImpl(BaseRepository<Dna, Long> baseRepository){super(baseRepository);}
+    public StatsServiceImpl(BaseRepository<Dna, Long> baseRepository, DnaRepository dnaRepository){
+        super(baseRepository);
+        this.dnaRepository = dnaRepository;
+    }
 
     @Override
-    public DnaStatsDto getStats() throws Exception {
+    public DnaStatsDto getStats(){
         int countMutants = dnaRepository.countByMutant(true);
         int countHumans = dnaRepository.countByMutant(false);
-        float ratio = (float) countMutants / countHumans;
+        float ratio = 0;
+        if (countHumans == 0){
+            ratio = (float) countMutants;
+        } else {
+        ratio = (float) countMutants / countHumans;
+        }
 
         return new DnaStatsDto(countMutants, countHumans, ratio);
     }

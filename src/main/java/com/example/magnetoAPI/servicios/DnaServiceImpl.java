@@ -12,7 +12,7 @@ import java.util.Optional;
 public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaService {
 
     @Autowired
-    private DnaRepository dnaRepository;
+    protected DnaRepository dnaRepository;
 
     public DnaServiceImpl(BaseRepository<Dna, Long> baseRepository){
         super(baseRepository);
@@ -41,7 +41,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         if (isMutant){
         return isMutant;
         } else {
-            throw new IllegalArgumentException("");
+            throw new RuntimeException("La matriz ingresada no pertenece a un mutante");
         }
 
     }
@@ -149,7 +149,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return contador;
     }
 
-    private int verificarDiagonales(ArrayList<String> dna, int contador){
+    public int verificarDiagonales(ArrayList<String> dna, int contador){
         for (String palabra : dna) {
             contador += verificarSecuencias(palabra);
             if (contador > 0){
@@ -159,7 +159,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return contador;
     }
 
-    private int verificarSecuencias(String palabra) {
+    public int verificarSecuencias(String palabra) {
         int contadorSecuencia = 0;
         for (int i = 0; i < palabra.length() - 3; i += 2) {
             if (palabra.charAt(i) == palabra.charAt(i + 2)) {
@@ -173,7 +173,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return contadorSecuencia;
     }
 
-    private boolean isValidDNA(String[] dna) {
+    public boolean isValidDNA(String[] dna) {
         if (dna == null || dna.length == 0) {
             return false;
         }
@@ -192,4 +192,3 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
         return true;
     }
 }
-
