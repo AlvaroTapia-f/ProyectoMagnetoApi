@@ -80,7 +80,7 @@ public class DnaServiceImplTest {
 
 
     @Test
-    @Order(2)
+    @Order(3)
     public void analizarDnaTest(){
 
         //Testear el resultado de una matriz válida, que es mutante por columnas
@@ -98,7 +98,7 @@ public class DnaServiceImplTest {
 
     @Test
     @Order(1)
-    public void isValidDNATest(){
+    public void isValidTestMatricesInvalida(){
 
         //Testear las matrices ingresadas inválidas
         Assertions.assertFalse(dnaService.isValidDNA(matrizInvalida1));
@@ -107,16 +107,17 @@ public class DnaServiceImplTest {
         Assertions.assertFalse(dnaService.isValidDNA(matrizInvalida4));
         Assertions.assertFalse(dnaService.isValidDNA(matrizInvalida5));
 
+    }
+
+    @Test
+    @Order(2)
+    public void isValidTestMatricesValidas(){
 
         //Testear las matrices válidas
         Assertions.assertTrue(dnaService.isValidDNA(matrizValida1));
         Assertions.assertTrue(dnaService.isValidDNA(matrizValida2));
         Assertions.assertTrue(dnaService.isValidDNA(matrizValida3));
         Assertions.assertTrue(dnaService.isValidDNA(matrizValida4));
-
-    }
-
-    public void isValidTest(){
 
     }
 
