@@ -50,10 +50,10 @@ Si ya lo tenemos:
 3. Ejecutar MagnetoApiApplication
 
 Podemos acceder localmente a openApi con el siguiente comando:
-#http://localhost:8080/swagger-ui/index.html 
+http://localhost:8080/swagger-ui/index.html 
 
 Y también podemos acceder a la base de datos para corroborar el correcto funcionamiento con:
-# http://localhost:8080/h2-console/
+http://localhost:8080/h2-console/
 
 IMPORTANTE
 =
