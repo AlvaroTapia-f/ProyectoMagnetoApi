@@ -12,7 +12,7 @@ public class DnaServiceImplTest {
     @Autowired
     private DnaRepository dnaRepository;
 
-    private final DnaServiceImpl dnaService = new DnaServiceImpl(dnaRepository);
+    private final DnaServiceImpl dnaService = new DnaServiceImpl(dnaRepository, dnaRepository);
 
     String[] matrizInvalida1 = {"ACGT",
                                 "ACGT",

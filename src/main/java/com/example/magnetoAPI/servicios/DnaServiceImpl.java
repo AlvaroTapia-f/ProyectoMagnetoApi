@@ -11,11 +11,12 @@ import java.util.Optional;
 @Service
 public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaService {
 
-    @Autowired
     protected DnaRepository dnaRepository;
 
-    public DnaServiceImpl(BaseRepository<Dna, Long> baseRepository){
+    @Autowired
+    public DnaServiceImpl(BaseRepository<Dna, Long> baseRepository, DnaRepository dnaRepository){
         super(baseRepository);
+        this.dnaRepository = dnaRepository;
     }
 
     @Override
@@ -38,11 +39,7 @@ public class DnaServiceImpl extends BaseServiceImpl<Dna, Long> implements DnaSer
                 .build();
         dnaRepository.save(dnaEntity);
 
-        if (isMutant){
         return isMutant;
-        } else {
-            throw new RuntimeException("La matriz ingresada no pertenece a un mutante");
-        }
 
     }
 

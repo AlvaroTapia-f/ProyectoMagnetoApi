@@ -15,9 +15,14 @@ public class DnaController extends BaseControllerImpl<Dna, DnaServiceImpl>{
     @PostMapping("")
     public ResponseEntity<?> isMutant(@RequestBody DnaRequestDto dnaRequest){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.analizarDna(dnaRequest.getDna()));
-        } catch (Exception e){
+            boolean result = servicio.analizarDna(dnaRequest.getDna());
+            if (result){
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+            }else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\":\" El ADN ingresado no pertenece a un mutante \"}");
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" Por favor, intente nuevamente \"}");
         }
     }
 

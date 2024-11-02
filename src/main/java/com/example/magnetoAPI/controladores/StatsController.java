@@ -19,7 +19,7 @@ public class StatsController extends BaseControllerImpl<Dna, StatsServiceImpl>{
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.getStats());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"Error\":\" No existe ningún ADN en la base de datos \"}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"Error\":\" Por favor, intente nuevamente \"}");
         }
     }
 

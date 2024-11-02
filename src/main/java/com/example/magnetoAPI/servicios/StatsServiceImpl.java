@@ -15,6 +15,7 @@ public class StatsServiceImpl extends BaseServiceImpl<Dna, Long> implements Stat
 //  @Autowired
     private DnaRepository dnaRepository;
 
+    @Autowired
     public StatsServiceImpl(BaseRepository<Dna, Long> baseRepository, DnaRepository dnaRepository){
         super(baseRepository);
         this.dnaRepository = dnaRepository;
