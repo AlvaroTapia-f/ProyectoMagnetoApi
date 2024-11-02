@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -51,7 +52,14 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.12.0'
 
+	// https://mvnrepository.com/artifact/org.jacoco/org.jacoco.agent
+	testImplementation group: 'org.jacoco', name: 'org.jacoco.agent', version: '0.8.12'
 
+	// https://mvnrepository.com/artifact/org.jacoco/org.jacoco.core
+	implementation group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.12'
+
+	// https://mvnrepository.com/artifact/org.jacoco/org.jacoco.report
+	implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.8.12'
 }
 
 tasks.named('test') {
