@@ -23,10 +23,6 @@ Más allá de ser una prueba técnica, este proyecto simula un escenario de **pr
 
 El proyecto sigue una **Arquitectura en Capas (Layered Architecture)** robusta, utilizando **Spring Boot 3**. Se ha puesto especial énfasis en la **reusabilidad de código** mediante el uso de Genéricos y Patrones de Diseño.
 
-### Diagrama de Flujo de Datos
-
-
-
 ### Stack Tecnológico y Decisiones de Diseño
 
 | Tecnología | Rol | ¿Por qué se eligió? |
